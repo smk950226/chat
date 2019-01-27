@@ -71,7 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'justchat.wsgi.application'
 
-ASGI_APPLICATION = 'mysite.routing.application'
+ASGI_APPLICATION = 'justchat.routing.application'
 
 
 # Database
