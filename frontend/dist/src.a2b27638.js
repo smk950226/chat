@@ -24589,7 +24589,143 @@ var Sidepanel = function Sidepanel(props) {
 
 var _default = Sidepanel;
 exports.default = _default;
-},{"react":"node_modules/react/index.js"}],"src/containers/Chat.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js"}],"src/websocket.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var WebSocketService =
+/*#__PURE__*/
+function () {
+  function WebSocketService() {
+    _classCallCheck(this, WebSocketService);
+
+    _defineProperty(this, "callbacks", {});
+
+    this.socketRef = null;
+  }
+
+  _createClass(WebSocketService, [{
+    key: "connect",
+    value: function connect() {
+      var _this = this;
+
+      var path = 'ws://127.0.0.1:8000/ws/chat/hi';
+      this.socketRef = new WebSocket(path);
+
+      this.socketRef.onopen = function () {
+        console.log('open');
+      };
+
+      this.socketRef.onmessage = function (e) {};
+
+      this.socketRef.onerror = function (e) {
+        console.log(e.message);
+      };
+
+      this.socketRef.onclose = function () {
+        console.log('close');
+
+        _this.connect();
+      };
+
+      socketNewMessage = function socketNewMessage(data) {
+        var parsedData = JSON.parse(data);
+        var command = parsedData.command;
+
+        if (Object.keys(_this.callbacks).length === 0) {
+          return;
+        }
+
+        if (command === 'messages') {
+          _this.callbacks[command](parsedData.messages);
+        }
+
+        if (command === 'new_message') {
+          _this.callbacks[command](parsedData.message);
+        }
+      };
+
+      fetchMessages = function fetchMessages(username) {
+        _this.sendMessage({
+          command: 'fetch_messages',
+          username: username
+        });
+      };
+
+      newChatMessage = function newChatMessage(message) {
+        _this.sendMessage({
+          command: 'new_message',
+          from_user: message.from_user,
+          message: message.content
+        });
+      };
+
+      addCallbacks = function addCallbacks(messagesCallback, newMessageCallback) {
+        _this.callbacks['messages'] = messagesCallback;
+        _this.callbacks['new_message'] = newMessageCallback;
+      };
+
+      sendMessage = function sendMessage(data) {
+        try {
+          _this.socketRef.send(JSON.stringify(_objectSpread({}, data)));
+        } catch (err) {
+          console.log(err.message);
+        }
+      };
+
+      waitForSocketConnection = function waitForSocketConnection(callback) {
+        var socket = _this.socketRef;
+        var recursion = _this.waitForSocketConnection;
+        setTimeout(function () {
+          if (socket.readyState === 1) {
+            console.log('connection is secure');
+
+            if (callback != null) {
+              callback();
+            }
+
+            return;
+          } else {
+            console.log('waiting for connection...');
+            recursion(callback);
+          }
+        }, 1);
+      };
+    }
+  }], [{
+    key: "getInstance",
+    value: function getInstance() {
+      if (!WebSocketService.instance) {
+        WebSocketService.instance = new WebSocketService();
+      }
+
+      return WebSocketService.instance;
+    }
+  }]);
+
+  return WebSocketService;
+}();
+
+_defineProperty(WebSocketService, "instance", null);
+
+var WebSocketInstance = WebSocketService.getInstance();
+var _default = WebSocketInstance;
+exports.default = _default;
+},{}],"src/containers/Chat.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24600,6 +24736,8 @@ exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _Sidepanel = _interopRequireDefault(require("./Sidepanel/Sidepanel"));
+
+var _websocket = _interopRequireDefault(require("../websocket"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24626,10 +24764,17 @@ var Chat =
 function (_React$Component) {
   _inherits(Chat, _React$Component);
 
-  function Chat() {
+  function Chat(props) {
+    var _this;
+
     _classCallCheck(this, Chat);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Chat).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Chat).call(this, props));
+    _this.state = {};
+
+    _this.waitForSocketConnection();
+
+    return _this;
   }
 
   _createClass(Chat, [{
@@ -24685,7 +24830,7 @@ function (_React$Component) {
 
 var _default = Chat;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","./Sidepanel/Sidepanel":"src/containers/Sidepanel/Sidepanel.js"}],"src/index.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","./Sidepanel/Sidepanel":"src/containers/Sidepanel/Sidepanel.js","../websocket":"src/websocket.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));

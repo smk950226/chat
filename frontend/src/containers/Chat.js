@@ -1,7 +1,16 @@
 import React from 'react';
 import Sidepanel from './Sidepanel/Sidepanel';
+import WebSocketInstance from '../websocket';
 
 class Chat extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+        this.waitForSocketConnection()
+    }
+    
     render(){
         return(
             <div id="frame">
