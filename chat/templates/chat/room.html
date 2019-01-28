@@ -39,7 +39,7 @@
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
             'message': message,
-            'command': 'fetch_messages'
+            'command': 'new_message'
         }));
 
         messageInputDom.value = '';
