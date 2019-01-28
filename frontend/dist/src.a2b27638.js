@@ -24810,7 +24810,7 @@ function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "setMessages", function (messages) {
       _this.setState({
-        messages: messages
+        messages: messages.reverse()
       });
     });
 
@@ -24828,7 +24828,27 @@ function (_React$Component) {
           className: message.user === currentUser ? 'sent' : 'replies'
         }, _react.default.createElement("img", {
           src: "http://emilcarlsson.se/assets/mikeross.png"
-        }), _react.default.createElement("p", null, message.content));
+        }), _react.default.createElement("p", null, message.content, _react.default.createElement("br", null), _react.default.createElement("small", null, Math.round((new Date().getTime() - new Date(message.timestamp)) / 60000), " \uBD84 \uC804")));
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "messageChangeHandler", function (event) {
+      _this.setState({
+        message: event.target.value
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "sendMessageHandler", function (e) {
+      e.preventDefault();
+      var messageObject = {
+        from_user: 'admin',
+        content: _this.state.message
+      };
+
+      _websocket.default.newChatMessage(messageObject);
+
+      _this.setState({
+        message: ''
       });
     });
 
@@ -24873,9 +24893,13 @@ function (_React$Component) {
         id: "chat-log"
       }, messages && this.renderMessage(messages))), _react.default.createElement("div", {
         className: "message-input"
+      }, _react.default.createElement("form", {
+        onSubmit: this.sendMessageHandler
       }, _react.default.createElement("div", {
         className: "wrap"
       }, _react.default.createElement("input", {
+        onChange: this.messageChangeHandler,
+        value: this.state.message,
         id: "chat-message-input",
         type: "text",
         placeholder: "Write your message..."
@@ -24888,7 +24912,7 @@ function (_React$Component) {
       }, _react.default.createElement("i", {
         className: "fa fa-paper-plane",
         "aria-hidden": "true"
-      }))))));
+      })))))));
     }
   }]);
 
@@ -24982,7 +25006,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2032" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "6756" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
