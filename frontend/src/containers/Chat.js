@@ -8,10 +8,52 @@ class Chat extends React.Component {
         this.state = {
 
         }
-        this.waitForSocketConnection()
+        this.waitForSocketConnection(() => {
+            WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
+            WebSocketInstance.fetchMessages(this.props.currentUser);
+        })
     }
-    
+
+    waitForSocketConnection = (callback) => {
+        const comopnent = this;
+        setTimeout(
+            function(){
+                if (WebSocketInstance.state() === 1){
+                    console.log('connection is secure');
+                    callback();
+                    return;
+                }
+                else{
+                    console.log('waiting for connection...');
+                    comopnent.waitForSocketConnection(callback);
+                }
+            }, 100);
+    }
+
+    setMessages = (messages) => {
+        this.setState({
+            messages
+        })
+    }
+
+    addMessage = (message) => {
+        this.setState({
+            messages: [...this.state.messages, message]
+        })
+    }
+
+    renderMessage = (messages) => {
+        const currentUser = 'admin';
+        return messages.map(message => (
+            <li key = {message.id} className={message.user === currentUser ? 'sent' : 'replies'}>
+                <img src="http://emilcarlsson.se/assets/mikeross.png" />
+                <p>{message.content}</p>
+            </li>
+        ))
+    }
+
     render(){
+        const messages = this.state.messages;
         return(
             <div id="frame">
                 <Sidepanel />
@@ -27,6 +69,7 @@ class Chat extends React.Component {
                     </div>
                     <div className="messages">
                         <ul id="chat-log">
+                            {messages && this.renderMessage(messages)}
                         </ul>
                     </div>
                     <div className="message-input">

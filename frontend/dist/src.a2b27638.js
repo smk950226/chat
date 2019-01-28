@@ -24611,9 +24611,79 @@ var WebSocketService =
 /*#__PURE__*/
 function () {
   function WebSocketService() {
+    var _this = this;
+
     _classCallCheck(this, WebSocketService);
 
     _defineProperty(this, "callbacks", {});
+
+    _defineProperty(this, "socketNewMessage", function (data) {
+      var parsedData = JSON.parse(data);
+      var command = parsedData.command;
+
+      if (Object.keys(_this.callbacks).length === 0) {
+        return;
+      }
+
+      if (command === 'messages') {
+        _this.callbacks[command](parsedData.messages);
+      }
+
+      if (command === 'new_message') {
+        _this.callbacks[command](parsedData.message);
+      }
+    });
+
+    _defineProperty(this, "fetchMessages", function (username) {
+      _this.sendMessage({
+        command: 'fetch_messages',
+        username: username
+      });
+    });
+
+    _defineProperty(this, "newChatMessage", function (message) {
+      _this.sendMessage({
+        command: 'new_message',
+        from_user: message.from_user,
+        message: message.content
+      });
+    });
+
+    _defineProperty(this, "addCallbacks", function (messagesCallback, newMessageCallback) {
+      _this.callbacks['messages'] = messagesCallback;
+      _this.callbacks['new_message'] = newMessageCallback;
+    });
+
+    _defineProperty(this, "sendMessage", function (data) {
+      try {
+        _this.socketRef.send(JSON.stringify(_objectSpread({}, data)));
+      } catch (err) {
+        console.log(err.message);
+      }
+    });
+
+    _defineProperty(this, "state", function () {
+      return _this.socketRef.readyState;
+    });
+
+    _defineProperty(this, "waitForSocketConnection", function (callback) {
+      var socket = _this.socketRef;
+      var recursion = _this.waitForSocketConnection;
+      setTimeout(function () {
+        if (socket.readyState === 1) {
+          console.log('connection is secure');
+
+          if (callback != null) {
+            callback();
+          }
+
+          return;
+        } else {
+          console.log('waiting for connection...');
+          recursion(callback);
+        }
+      }, 1);
+    });
 
     this.socketRef = null;
   }
@@ -24621,7 +24691,7 @@ function () {
   _createClass(WebSocketService, [{
     key: "connect",
     value: function connect() {
-      var _this = this;
+      var _this2 = this;
 
       var path = 'ws://127.0.0.1:8000/ws/chat/hi';
       this.socketRef = new WebSocket(path);
@@ -24639,71 +24709,7 @@ function () {
       this.socketRef.onclose = function () {
         console.log('close');
 
-        _this.connect();
-      };
-
-      socketNewMessage = function socketNewMessage(data) {
-        var parsedData = JSON.parse(data);
-        var command = parsedData.command;
-
-        if (Object.keys(_this.callbacks).length === 0) {
-          return;
-        }
-
-        if (command === 'messages') {
-          _this.callbacks[command](parsedData.messages);
-        }
-
-        if (command === 'new_message') {
-          _this.callbacks[command](parsedData.message);
-        }
-      };
-
-      fetchMessages = function fetchMessages(username) {
-        _this.sendMessage({
-          command: 'fetch_messages',
-          username: username
-        });
-      };
-
-      newChatMessage = function newChatMessage(message) {
-        _this.sendMessage({
-          command: 'new_message',
-          from_user: message.from_user,
-          message: message.content
-        });
-      };
-
-      addCallbacks = function addCallbacks(messagesCallback, newMessageCallback) {
-        _this.callbacks['messages'] = messagesCallback;
-        _this.callbacks['new_message'] = newMessageCallback;
-      };
-
-      sendMessage = function sendMessage(data) {
-        try {
-          _this.socketRef.send(JSON.stringify(_objectSpread({}, data)));
-        } catch (err) {
-          console.log(err.message);
-        }
-      };
-
-      waitForSocketConnection = function waitForSocketConnection(callback) {
-        var socket = _this.socketRef;
-        var recursion = _this.waitForSocketConnection;
-        setTimeout(function () {
-          if (socket.readyState === 1) {
-            console.log('connection is secure');
-
-            if (callback != null) {
-              callback();
-            }
-
-            return;
-          } else {
-            console.log('waiting for connection...');
-            recursion(callback);
-          }
-        }, 1);
+        _this2.connect();
       };
     }
   }], [{
@@ -24743,6 +24749,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -24751,13 +24765,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var Chat =
 /*#__PURE__*/
@@ -24770,9 +24786,53 @@ function (_React$Component) {
     _classCallCheck(this, Chat);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Chat).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "waitForSocketConnection", function (callback) {
+      var comopnent = _assertThisInitialized(_assertThisInitialized(_this));
+
+      setTimeout(function () {
+        if (_websocket.default.state() === 1) {
+          console.log('connection is secure');
+          callback();
+          return;
+        } else {
+          console.log('waiting for connection...');
+          comopnent.waitForSocketConnection(callback);
+        }
+      }, 100);
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "setMessages", function (messages) {
+      _this.setState({
+        messages: messages
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "addMessage", function (message) {
+      _this.setState({
+        messages: [].concat(_toConsumableArray(_this.state.messages), [message])
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "renderMessage", function (messages) {
+      var currentUser = 'admin';
+      return messages.map(function (message) {
+        return _react.default.createElement("li", {
+          key: message.id,
+          className: message.user === currentUser ? 'sent' : 'replies'
+        }, _react.default.createElement("img", {
+          src: "http://emilcarlsson.se/assets/mikeross.png"
+        }), _react.default.createElement("p", null, message.content));
+      });
+    });
+
     _this.state = {};
 
-    _this.waitForSocketConnection();
+    _this.waitForSocketConnection(function () {
+      _websocket.default.addCallbacks(_this.setMessages.bind(_assertThisInitialized(_assertThisInitialized(_this))), _this.addMessage.bind(_assertThisInitialized(_assertThisInitialized(_this))));
+
+      _websocket.default.fetchMessages(_this.props.currentUser);
+    });
 
     return _this;
   }
@@ -24780,6 +24840,7 @@ function (_React$Component) {
   _createClass(Chat, [{
     key: "render",
     value: function render() {
+      var messages = this.state.messages;
       return _react.default.createElement("div", {
         id: "frame"
       }, _react.default.createElement(_Sidepanel.default, null), _react.default.createElement("div", {
@@ -24804,7 +24865,7 @@ function (_React$Component) {
         className: "messages"
       }, _react.default.createElement("ul", {
         id: "chat-log"
-      })), _react.default.createElement("div", {
+      }, messages && this.renderMessage(messages))), _react.default.createElement("div", {
         className: "message-input"
       }, _react.default.createElement("div", {
         className: "wrap"
@@ -24908,7 +24969,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "7856" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2032" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
