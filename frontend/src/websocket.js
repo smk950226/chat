@@ -14,15 +14,18 @@ class WebSocketService {
     }
 
     connect(){
-        const path = 'ws://127.0.0.1:8000/ws/chat/hi';
+        const path = 'ws://127.0.0.1:8000/ws/chat/hi/';
         this.socketRef = new WebSocket(path);
 
         this.socketRef.onopen = () => {
             console.log('open');
         };
-
+        
+        this.socketNewMessage(JSON.stringify({
+            command: 'fetch_messages'
+        }))
         this.socketRef.onmessage = e => {
-
+            this.socketNewMessage(e.data);
         };
 
         this.socketRef.onerror = e => {

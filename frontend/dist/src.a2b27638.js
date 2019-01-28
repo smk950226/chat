@@ -24693,14 +24693,20 @@ function () {
     value: function connect() {
       var _this2 = this;
 
-      var path = 'ws://127.0.0.1:8000/ws/chat/hi';
+      var path = 'ws://127.0.0.1:8000/ws/chat/hi/';
       this.socketRef = new WebSocket(path);
 
       this.socketRef.onopen = function () {
         console.log('open');
       };
 
-      this.socketRef.onmessage = function (e) {};
+      this.socketNewMessage(JSON.stringify({
+        command: 'fetch_messages'
+      }));
+
+      this.socketRef.onmessage = function (e) {
+        _this2.socketNewMessage(e.data);
+      };
 
       this.socketRef.onerror = function (e) {
         console.log(e.message);
@@ -24900,6 +24906,8 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _Chat = _interopRequireDefault(require("./containers/Chat"));
 
+var _websocket = _interopRequireDefault(require("./websocket"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -24932,6 +24940,11 @@ function (_React$Component) {
   }
 
   _createClass(App, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      _websocket.default.connect();
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react.default.createElement(_Chat.default, null);
@@ -24942,7 +24955,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 _reactDom.default.render(_react.default.createElement(App, null), document.getElementById('app'));
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./containers/Chat":"src/containers/Chat.js"}],"../../../Users/sm952/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./containers/Chat":"src/containers/Chat.js","./websocket":"src/websocket.js"}],"../../../Users/sm952/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
