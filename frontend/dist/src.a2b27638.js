@@ -24482,12 +24482,217 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"node_modules/react-dom/cjs/react-dom.development.js"}],"src/index.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"node_modules/react-dom/cjs/react-dom.development.js"}],"src/containers/Sidepanel/Sidepanel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Sidepanel = function Sidepanel(props) {
+  return _react.default.createElement("div", {
+    id: "sidepanel"
+  }, _react.default.createElement("div", {
+    id: "profile"
+  }, _react.default.createElement("div", {
+    className: "wrap"
+  }, _react.default.createElement("img", {
+    id: "profile-img",
+    src: "http://emilcarlsson.se/assets/mikeross.png",
+    className: "online",
+    alt: ""
+  }), _react.default.createElement("p", null, "username"), _react.default.createElement("i", {
+    className: "fa fa-chevron-down expand-button",
+    "aria-hidden": "true"
+  }), _react.default.createElement("div", {
+    id: "status-options"
+  }, _react.default.createElement("ul", null, _react.default.createElement("li", {
+    id: "status-online",
+    className: "active"
+  }, _react.default.createElement("span", {
+    className: "status-circle"
+  }), " ", _react.default.createElement("p", null, "Online")), _react.default.createElement("li", {
+    id: "status-away"
+  }, _react.default.createElement("span", {
+    className: "status-circle"
+  }), " ", _react.default.createElement("p", null, "Away")), _react.default.createElement("li", {
+    id: "status-busy"
+  }, _react.default.createElement("span", {
+    className: "status-circle"
+  }), " ", _react.default.createElement("p", null, "Busy")), _react.default.createElement("li", {
+    id: "status-offline"
+  }, _react.default.createElement("span", {
+    className: "status-circle"
+  }), " ", _react.default.createElement("p", null, "Offline")))), _react.default.createElement("div", {
+    id: "expanded"
+  }))), _react.default.createElement("div", {
+    id: "search"
+  }, _react.default.createElement("label", {
+    htmlFor: ""
+  }, _react.default.createElement("i", {
+    className: "fa fa-search",
+    "aria-hidden": "true"
+  })), _react.default.createElement("input", {
+    type: "text",
+    placeholder: "Search contacts..."
+  })), _react.default.createElement("div", {
+    id: "contacts"
+  }, _react.default.createElement("ul", null, _react.default.createElement("li", {
+    className: "contact"
+  }, _react.default.createElement("div", {
+    className: "wrap"
+  }, _react.default.createElement("span", {
+    className: "contact-status online"
+  }), _react.default.createElement("img", {
+    src: "http://emilcarlsson.se/assets/louislitt.png",
+    alt: ""
+  }), _react.default.createElement("div", {
+    className: "meta"
+  }, _react.default.createElement("p", {
+    className: "name"
+  }, "Louis Litt"), _react.default.createElement("p", {
+    className: "preview"
+  }, "You just got LITT up, Mike.")))), _react.default.createElement("li", {
+    className: "contact active"
+  }, _react.default.createElement("div", {
+    className: "wrap"
+  }, _react.default.createElement("span", {
+    className: "contact-status busy"
+  }), _react.default.createElement("img", {
+    src: "http://emilcarlsson.se/assets/harveyspecter.png",
+    alt: ""
+  }), _react.default.createElement("div", {
+    className: "meta"
+  }, _react.default.createElement("p", {
+    className: "name"
+  }, "Harvey Specter"), _react.default.createElement("p", {
+    className: "preview"
+  }, "Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.")))))), _react.default.createElement("div", {
+    id: "bottom-bar"
+  }, _react.default.createElement("button", {
+    id: "addcontact"
+  }, _react.default.createElement("i", {
+    className: "fa fa-user-plus fa-fw",
+    "aria-hidden": "true"
+  }), " ", _react.default.createElement("span", null, "Add contact")), _react.default.createElement("button", {
+    id: "settings"
+  }, _react.default.createElement("i", {
+    className: "fa fa-cog fa-fw",
+    "aria-hidden": "true"
+  }), " ", _react.default.createElement("span", null, "Settings"))));
+};
+
+var _default = Sidepanel;
+exports.default = _default;
+},{"react":"node_modules/react/index.js"}],"src/containers/Chat.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _Sidepanel = _interopRequireDefault(require("./Sidepanel/Sidepanel"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Chat =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Chat, _React$Component);
+
+  function Chat() {
+    _classCallCheck(this, Chat);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Chat).apply(this, arguments));
+  }
+
+  _createClass(Chat, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("div", {
+        id: "frame"
+      }, _react.default.createElement(_Sidepanel.default, null), _react.default.createElement("div", {
+        className: "content"
+      }, _react.default.createElement("div", {
+        className: "contact-profile"
+      }, _react.default.createElement("img", {
+        src: "http://emilcarlsson.se/assets/harveyspecter.png",
+        alt: ""
+      }), _react.default.createElement("p", null, "username"), _react.default.createElement("div", {
+        className: "social-media"
+      }, _react.default.createElement("i", {
+        className: "fa fa-facebook",
+        "aria-hidden": "true"
+      }), _react.default.createElement("i", {
+        className: "fa fa-twitter",
+        "aria-hidden": "true"
+      }), _react.default.createElement("i", {
+        className: "fa fa-instagram",
+        "aria-hidden": "true"
+      }))), _react.default.createElement("div", {
+        className: "messages"
+      }, _react.default.createElement("ul", {
+        id: "chat-log"
+      })), _react.default.createElement("div", {
+        className: "message-input"
+      }, _react.default.createElement("div", {
+        className: "wrap"
+      }, _react.default.createElement("input", {
+        id: "chat-message-input",
+        type: "text",
+        placeholder: "Write your message..."
+      }), _react.default.createElement("i", {
+        className: "fa fa-paperclip attachment",
+        "aria-hidden": "true"
+      }), _react.default.createElement("button", {
+        id: "chat-message-submit",
+        className: "submit"
+      }, _react.default.createElement("i", {
+        className: "fa fa-paper-plane",
+        "aria-hidden": "true"
+      }))))));
+    }
+  }]);
+
+  return Chat;
+}(_react.default.Component);
+
+var _default = Chat;
+exports.default = _default;
+},{"react":"node_modules/react/index.js","./Sidepanel/Sidepanel":"src/containers/Sidepanel/Sidepanel.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
 
 var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _Chat = _interopRequireDefault(require("./containers/Chat"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24523,7 +24728,7 @@ function (_React$Component) {
   _createClass(App, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", null, "hello");
+      return _react.default.createElement(_Chat.default, null);
     }
   }]);
 
@@ -24531,7 +24736,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 _reactDom.default.render(_react.default.createElement(App, null), document.getElementById('app'));
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js"}],"../../../Users/sm952/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./containers/Chat":"src/containers/Chat.js"}],"../../../Users/sm952/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -24558,7 +24763,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "6825" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "7856" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
