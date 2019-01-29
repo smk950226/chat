@@ -45,6 +45,24 @@ class Chat extends React.Component {
         })
     }
 
+    renderTimestamp = timestamp => {
+        let prefix = '';
+        const timeDiff = Math.round((new Date().getTime() -  new Date(timestamp))/60000);
+        if(timeDiff < 60 && timeDiff >= 0){
+            prefix = `${timeDiff} minutes ago`;
+        }
+        else if(timeDiff < 24*60 && timeDiff >= 60){
+            prefix = `${Math.round(timeDiff/60)} hours ago`;
+        }
+        else if(timeDiff < 31*24*60 && timeDiff >= 24*60){
+            prefix = `${Math.round(timeDiff/(60*24))} days ago`;
+        }
+        else{
+            prefix = `${new Date(timestamp)}`;
+        }
+        return prefix
+    }
+
     renderMessages = (messages) => {
         const currentUser = 'admin';
         return messages.map(message => (
@@ -52,7 +70,7 @@ class Chat extends React.Component {
                 <img src="http://emilcarlsson.se/assets/mikeross.png" />
                 <p>
                     {message.content}<br/>
-                    <small>{Math.round((new Date().getTime() -  new Date(message.timestamp))/60000)} 분 전</small>
+                    <small>{this.renderTimestamp(message.timestamp)}</small>
                 </p>
             </li>
         ))
