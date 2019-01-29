@@ -1,11 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import WebSocketInstance from '../websocket';
+import Hoc from '../hoc/hoc';
 
 class Chat extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-
+            message: ''
         }
         this.waitForSocketConnection(() => {
             WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
@@ -14,7 +16,11 @@ class Chat extends React.Component {
     }
 
     componentDidMount(){
-        WebSocketInstance.connect();
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate(){
+        this.scrollToBottom();
     }
 
     waitForSocketConnection = (callback) => {
@@ -64,9 +70,9 @@ class Chat extends React.Component {
     }
 
     renderMessages = (messages) => {
-        const currentUser = 'admin';
-        return messages.map(message => (
-            <li key = {message.id} className={message.user === currentUser ? 'sent' : 'replies'}>
+        const currentUser = this.props.username;
+        return messages.map((message, i, arr) => (
+            <li key = {message.id} style={{marginBottom: arr.length - 1 === i ? '300px' : '15px'}} className={message.user === currentUser ? 'sent' : 'replies'}>
                 <img src="http://emilcarlsson.se/assets/mikeross.png" />
                 <p>
                     {message.content}<br/>
@@ -94,16 +100,21 @@ class Chat extends React.Component {
         })
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: 'smooth'})
+    }
+
     render(){
         const messages = this.state.messages;
         return(
-            <div>                
+            <Hoc>                
                 <div className="messages">
                     <ul id="chat-log">
                     { 
                         messages && 
                         this.renderMessages(messages) 
                     }
+                    <div style={{float: 'left', clear: 'both'}} ref={(el) => {this.messagesEnd = el;}}></div>
                     </ul>
                 </div>
                 <div className="message-input">
@@ -123,9 +134,15 @@ class Chat extends React.Component {
                         </div>
                     </form>
                 </div>
-            </div>
+            </Hoc>
         )
     }
 }
 
-export default Chat; 
+const mapStateToProps = state => {
+    return {
+        username: state.username
+    }
+}
+
+export default connect(mapStateToProps)(Chat); 
