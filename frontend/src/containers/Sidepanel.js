@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Spin, Icon } from 'antd';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
@@ -11,6 +12,27 @@ class Sidepanel extends React.Component {
 
     state = { 
         loginForm: true,
+        chats: []
+    }
+
+    componentWillReceiveProps(newProps){
+        if(newProps.token !== null && newProps.username !== null){
+            this.getUserChats(newProps.token, newProps.username)
+        }
+    }
+
+    getUserChats = (token, username) => {
+        axios.defaults.headers = {
+            "Content-Type": 'application/json',
+            "Authorization": `Token ${token}`
+        }
+        axios.get(`http://127.0.0.1:8000/chat/?username=${username}`)
+        .then(res => {
+            console.log(res.data);
+            this.setState({
+                chats: res.data
+            })
+        })
     }
 
     changeForm = () => {
@@ -35,6 +57,11 @@ class Sidepanel extends React.Component {
     }
 
     render() {
+        const activeChats = this.state.chats.map(c => {
+            return (
+                <Contact key={c.id} name="Louis Litt" status="online" picURL="http://emilcarlsson.se/assets/louislitt.png" chatURL={`/${c.id}`} />
+            )
+        })
         return (
             <div id="sidepanel">
             <div id="profile">
@@ -99,8 +126,7 @@ class Sidepanel extends React.Component {
             </div>
             <div id="contacts">
                 <ul>
-                    <Contact name="Louis Litt" status="online" picURL="http://emilcarlsson.se/assets/louislitt.png" chatURL="/louis" />
-                    <Contact name="Harvey Specter" status="busy" picURL="http://emilcarlsson.se/assets/harveyspecter.png" chatURL="/harvey" />
+                    {activeChats}
                 </ul>
             </div>
             <div id="bottom-bar">
@@ -115,7 +141,9 @@ class Sidepanel extends React.Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.token !== null,
-        loading: state.loading
+        loading: state.loading,
+        token: state.token,
+        username: state.username
     }
 }
 
