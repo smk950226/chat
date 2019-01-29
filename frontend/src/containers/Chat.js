@@ -45,7 +45,7 @@ class Chat extends React.Component {
         })
     }
 
-    renderMessage = (messages) => {
+    renderMessages = (messages) => {
         const currentUser = 'admin';
         return messages.map(message => (
             <li key = {message.id} className={message.user === currentUser ? 'sent' : 'replies'}>
@@ -79,16 +79,7 @@ class Chat extends React.Component {
     render(){
         const messages = this.state.messages;
         return(
-            <div className="content">
-                <div className="contact-profile">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>{this.props.username}</p>
-                    <div className="social-media">
-                    <i className="fa fa-facebook" aria-hidden="true"></i>
-                    <i className="fa fa-twitter" aria-hidden="true"></i>
-                    <i className="fa fa-instagram" aria-hidden="true"></i>
-                    </div>
-                </div>
+            <div>                
                 <div className="messages">
                     <ul id="chat-log">
                     { 
