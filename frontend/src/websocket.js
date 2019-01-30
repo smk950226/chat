@@ -37,6 +37,11 @@ class WebSocketService {
             this.connect();
         };
     }
+
+    disconnect(){
+        this.socketRef.close();
+    }
+
     socketNewMessage = data => {
         const parsedData = JSON.parse(data);
         const command = parsedData.command;

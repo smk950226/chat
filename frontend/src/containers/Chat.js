@@ -22,7 +22,14 @@ class Chat extends React.Component {
     }
 
     componentWillReceiveProps(newProps){
-        this.initializeChat();
+        if(this.props.match.params.chatID !== newProps.match.params.chatID){
+            WebSocketInstance.disconnect();
+            this.waitForSocketConnection(() => {
+                WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
+                WebSocketInstance.fetchMessages(this.props.currentUser, newProps.match.params.chatID);
+            })
+            WebSocketInstance.connect(newProps.match.params.chatID)
+        }
     }
 
     componentDidMount(){
