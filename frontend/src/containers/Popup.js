@@ -6,7 +6,7 @@ class AddChatModal extends React.Component {
   render() {
     return (
         <Modal
-          centered="20px to Top"
+          centered
           footer={null}
           visible={this.props.isVisible}
           onCancel={this.props.close}
