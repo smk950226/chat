@@ -6,7 +6,7 @@ import Hoc from '../hoc/hoc';
 class Chat extends React.Component {
     initializeChat(){
         this.waitForSocketConnection(() => {
-            WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
+            // WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
             WebSocketInstance.fetchMessages(this.props.currentUser, this.props.match.params.chatID);
         })
         WebSocketInstance.connect(this.props.match.params.chatID)
@@ -56,17 +56,17 @@ class Chat extends React.Component {
             }, 100);
     }
 
-    setMessages = (messages) => {
-        this.setState({
-            messages: messages.reverse()
-        })
-    }
+    // setMessages = (messages) => {
+    //     this.setState({
+    //         messages: messages.reverse()
+    //     })
+    // }
 
-    addMessage = (message) => {
-        this.setState({
-            messages: [...this.state.messages, message]
-        })
-    }
+    // addMessage = (message) => {
+    //     this.setState({
+    //         messages: [...this.state.messages, message]
+    //     })
+    // }
 
     renderTimestamp = timestamp => {
         let prefix = '';
@@ -129,8 +129,8 @@ class Chat extends React.Component {
                 <div className="messages">
                     <ul id="chat-log">
                     { 
-                        messages && 
-                        this.renderMessages(messages) 
+                        this.props.messages && 
+                        this.renderMessages(this.props.messages) 
                     }
                     <div style={{float: 'left', clear: 'both'}} ref={(el) => {this.messagesEnd = el;}}></div>
                     </ul>
@@ -159,7 +159,8 @@ class Chat extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        username: state.auth.username
+        username: state.auth.username,
+        messages: state.message.messages
     }
 }
 

@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import 'antd/dist/antd.css';
 import authReducer from './store/reducers/auth';
 import navReducer from './store/reducers/nav';
+import messageReducer from './store/reducers/message';
 import App from './App';
 
 const composeEnhances = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -13,7 +14,8 @@ const composeEnhances = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 function configureStore() {
     const rootReducer = combineReducers({
         auth: authReducer,
-        nav: navReducer
+        nav: navReducer,
+        message: messageReducer
     })
 
     const store = createStore(rootReducer, composeEnhances(
