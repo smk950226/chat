@@ -56,6 +56,7 @@ class Chat extends React.Component {
     }
 
     addMessage = (message) => {
+        console.log('hihi')
         this.setState({
             messages: [...this.state.messages, message]
         })
@@ -101,8 +102,9 @@ class Chat extends React.Component {
     sendMessageHandler = e => {
         e.preventDefault();
         const messageObject = {
-            from_user: 'admin',
-            content: this.state.message
+            from_user: this.props.username,
+            content: this.state.message,
+            chatId: this.props.match.params.chatID
         }
         WebSocketInstance.newChatMessage(messageObject);
         this.setState({
