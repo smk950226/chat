@@ -45,6 +45,7 @@ import * as messageActions from '../store/actions/message';
             .then(res => {
                 this.props.history.push(`/${res.data.id}`);
                 this.props.closeAddChatPopup();
+                this.props.getUserChats(this.props.username, this.props.token)
             })
             .catch(err => {
                 console.error(err);

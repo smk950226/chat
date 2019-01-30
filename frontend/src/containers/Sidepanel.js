@@ -4,6 +4,7 @@ import { Spin, Icon } from 'antd';
 import { connect } from 'react-redux';
 import * as authActions from '../store/actions/auth';
 import * as navActions from '../store/actions/nav';
+import * as messageActions from '../store/actions/message';
 import Contact from '../components/Contact';
 
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -12,34 +13,24 @@ const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 class Sidepanel extends React.Component {
 
     state = { 
-        loginForm: true,
-        chats: []
+        loginForm: true
+    }
+
+    waitForAuthDetails(){
+        const component = this;
+        setTimeout(function(){
+            if((component.props.token !== null) &&(component.props.token !== undefined)){
+                component.props.getUserChats(component.props.username, component.props.token);
+                return;
+            }
+            else{
+                component.waitForAuthDetails()
+            }
+        }, 100)
     }
 
     componentDidMount(){
-        if(this.props.token !== null && this.props.username !== null){
-            this.getUserChats(this.props.token, this.props.username)
-        }
-    }
-
-    componentWillReceiveProps(newProps){
-        if(newProps.token !== null && newProps.username !== null){
-            this.getUserChats(newProps.token, newProps.username)
-        }
-    }
-
-    getUserChats = (token, username) => {
-        axios.defaults.headers = {
-            "Content-Type": 'application/json',
-            "Authorization": `Token ${token}`
-        }
-        axios.get(`http://127.0.0.1:8000/chat/?username=${username}`)
-        .then(res => {
-            console.log(res.data);
-            this.setState({
-                chats: res.data
-            })
-        })
+        this.waitForAuthDetails();
     }
 
     changeForm = () => {
@@ -68,7 +59,8 @@ class Sidepanel extends React.Component {
     }
 
     render() {
-        const activeChats = this.state.chats.map(c => {
+        console.log(this.props.chats)
+        const activeChats = this.props.chats.map(c => {
             return (
                 <Contact key={c.id} name="Louis Litt" status="online" picURL="http://emilcarlsson.se/assets/louislitt.png" chatURL={`/${c.id}`} />
             )
@@ -154,7 +146,8 @@ const mapStateToProps = state => {
         isAuthenticated: state.auth.token !== null,
         loading: state.auth.loading,
         token: state.auth.token,
-        username: state.auth.username
+        username: state.auth.username,
+        chats: state.message.chats
     }
 }
 
@@ -163,7 +156,8 @@ const mapDispatchToProps = dispatch => {
         login: (userName, password) => dispatch(authActions.authLogin(userName, password)),
         logout: () => dispatch(authActions.logout()),
         signup: (username, email, password1, password2) => dispatch(authActions.authSignup(username, email, password1, password2)),
-        addChat: () => dispatch(navActions.openAddChatPopup())
+        addChat: () => dispatch(navActions.openAddChatPopup()),
+        getUserChats: (username, token) => dispatch(messageActions.getUserChats(username, token))
     }
 }
 
