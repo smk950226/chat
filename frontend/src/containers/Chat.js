@@ -159,7 +159,7 @@ class Chat extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        username: state.username
+        username: state.auth.username
     }
 }
 

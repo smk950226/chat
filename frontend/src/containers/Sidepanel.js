@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Spin, Icon } from 'antd';
 import { connect } from 'react-redux';
-import * as actions from '../store/actions/auth';
+import * as authActions from '../store/actions/auth';
+import * as navActions from '../store/actions/nav';
 import Contact from '../components/Contact';
 
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
@@ -60,6 +61,10 @@ class Sidepanel extends React.Component {
                 e.target.password2.value
             );
         }
+    }
+
+    openAddChatPopup() {
+        this.props.addChat();
     }
 
     render() {
@@ -136,7 +141,7 @@ class Sidepanel extends React.Component {
                 </ul>
             </div>
             <div id="bottom-bar">
-                <button id="addcontact"><i className="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
+                <button id="addcontact" onClick={()=> this.openAddChatPopup()}><i className="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add chat</span></button>
                 <button id="settings"><i className="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
             </div>
             </div>
@@ -146,18 +151,19 @@ class Sidepanel extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.token !== null,
-        loading: state.loading,
-        token: state.token,
-        username: state.username
+        isAuthenticated: state.auth.token !== null,
+        loading: state.auth.loading,
+        token: state.auth.token,
+        username: state.auth.username
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        login: (userName, password) => dispatch(actions.authLogin(userName, password)),
-        logout: () => dispatch(actions.logout()),
-        signup: (username, email, password1, password2) => dispatch(actions.authSignup(username, email, password1, password2)),
+        login: (userName, password) => dispatch(authActions.authLogin(userName, password)),
+        logout: () => dispatch(authActions.logout()),
+        signup: (username, email, password1, password2) => dispatch(authActions.authSignup(username, email, password1, password2)),
+        addChat: () => dispatch(navActions.openAddChatPopup())
     }
 }
 
