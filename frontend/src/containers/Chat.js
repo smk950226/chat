@@ -4,15 +4,25 @@ import WebSocketInstance from '../websocket';
 import Hoc from '../hoc/hoc';
 
 class Chat extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            message: ''
-        }
+    initializeChat(){
         this.waitForSocketConnection(() => {
             WebSocketInstance.addCallbacks(this.setMessages.bind(this), this.addMessage.bind(this));
-            WebSocketInstance.fetchMessages(this.props.currentUser);
+            WebSocketInstance.fetchMessages(this.props.currentUser, this.props.match.params.chatID);
         })
+        WebSocketInstance.connect(this.props.match.params.chatID)
+    }
+
+    constructor(props){
+        super(props);
+        this.initializeChat();
+    }
+
+    state = {
+        message: ''
+    }
+
+    componentWillReceiveProps(newProps){
+        this.initializeChat();
     }
 
     componentDidMount(){
